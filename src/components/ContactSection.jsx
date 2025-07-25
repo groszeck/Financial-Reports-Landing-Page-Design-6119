@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
-import { supabase } from '../lib/supabase';
 
 const { FiPhone, FiMail, FiMapPin, FiSend, FiCheckCircle, FiAlertCircle, FiLoader } = FiIcons;
 
@@ -11,6 +10,8 @@ const ContactSection = () => {
     name: '',
     email: '',
     phone: '',
+    phonePrefix: '+48',
+    nip: '',
     message: ''
   });
 
@@ -45,7 +46,20 @@ const ContactSection = () => {
   ];
 
   const handleChange = (e) => {
-    const { id, value } = e.target;
+    const { id, value, name } = e.target;
+    if (name === 'phonePrefix') {
+      setFormData(prev => ({ ...prev, phonePrefix: value }));
+      return;
+    }
+    // Automatyczne czyszczenie NIP z myślników i spacji
+    if (id === 'nip') {
+      const cleaned = value.replace(/[-\s]/g, '');
+      setFormData(prev => ({ ...prev, nip: cleaned }));
+      if (validationErrors.nip) {
+        setValidationErrors(prev => ({ ...prev, nip: '' }));
+      }
+      return;
+    }
     setFormData(prev => ({ ...prev, [id]: value }));
 
     // Clear validation error when user types
@@ -64,9 +78,26 @@ const ContactSection = () => {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       errors.email = 'Podaj prawidłowy adres email';
     }
-    if (!formData.message.trim()) {
-      errors.message = 'Wiadomość jest wymagana';
+    if (!formData.nip.trim()) {
+      errors.nip = 'NIP firmy jest wymagany';
+    } else {
+      const nipClean = formData.nip.replace(/[-\s]/g, '');
+      if (!/^\d{10}$/.test(nipClean)) {
+        errors.nip = 'NIP powinien składać się z 10 cyfr';
+      }
     }
+    if (!formData.phone.trim()) {
+      errors.phone = 'Telefon jest wymagany';
+    } else {
+      const phoneDigits = formData.phone.replace(/\D/g, '');
+      if (phoneDigits.length !== 9) {
+        errors.phone = 'Telefon powinien składać się z 9 cyfr';
+      }
+    }
+    // Usuwam wymagalność pola message
+    // if (!formData.message.trim()) {
+    //   errors.message = 'Wiadomość jest wymagana';
+    // }
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -86,30 +117,39 @@ const ContactSection = () => {
     });
 
     try {
-      const { data, error } = await supabase
-        .from('contact_messages_x8f29a7b4')
-        .insert([
-          {
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone || null,
-            message: formData.message
-          }
-        ]);
+      // Przygotuj dane dla Netlify Forms
+      const formDataToSend = new FormData();
+      formDataToSend.append('form-name', 'contact');
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('phone', `${formData.phonePrefix} ${formData.phone}`.trim());
+      formDataToSend.append('nip', formData.nip.replace(/[-\s]/g, ''));
+      formDataToSend.append('message', formData.message);
 
-      if (error) throw error;
+      // Wyślij do Netlify Forms
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formDataToSend).toString()
+      });
+
+      if (!response.ok) {
+        throw new Error('Błąd wysyłania formularza');
+      }
 
       setFormStatus({
         isSubmitting: false,
         isSubmitted: true,
         isError: false,
-        message: 'Dziękujemy! Twoja wiadomość została zapisana. Skontaktujemy się wkrótce.'
+        message: 'Dziękujemy! Twoja wiadomość została wysłana. Skontaktujemy się wkrótce.'
       });
 
       setFormData({
         name: '',
         email: '',
         phone: '',
+        phonePrefix: '+48',
+        nip: '',
         message: ''
       });
     } catch (error) {
@@ -124,7 +164,7 @@ const ContactSection = () => {
   };
 
   return (
-    <section id="contact" className="py-20 bg-white">
+    <section id="contact" className="py-20 bg-gradient-to-br from-white via-[rgb(252,248,240)] to-[rgb(250,246,238)]">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -184,12 +224,14 @@ const ContactSection = () => {
               </div>
             )}
 
-            <form onSubmit={handleSubmit}>
+            <form name="contact" method="POST" data-netlify="true" onSubmit={handleSubmit}>
+              <input type="hidden" name="form-name" value="contact" />
               <div className="mb-4">
                 <label htmlFor="name" className="block text-gray-700 mb-2">Imię i nazwisko *</label>
                 <input
                   type="text"
                   id="name"
+                  name="name"
                   value={formData.name}
                   onChange={handleChange}
                   className={`w-full px-4 py-3 border ${validationErrors.name ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring focus:ring-[#002999]/20 focus:border-[#002999] transition-colors`}
@@ -205,6 +247,7 @@ const ContactSection = () => {
                 <input
                   type="email"
                   id="email"
+                  name="email"
                   value={formData.email}
                   onChange={handleChange}
                   className={`w-full px-4 py-3 border ${validationErrors.email ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring focus:ring-[#002999]/20 focus:border-[#002999] transition-colors`}
@@ -216,21 +259,65 @@ const ContactSection = () => {
               </div>
               
               <div className="mb-4">
-                <label htmlFor="phone" className="block text-gray-700 mb-2">Telefon (opcjonalnie)</label>
+                <label htmlFor="phone" className="block text-gray-700 mb-2">Telefon *</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    name="phonePrefix"
+                    value={formData.phonePrefix}
+                    onChange={handleChange}
+                    className="w-24 px-3 py-3 border border-gray-300 rounded-lg focus:ring focus:ring-[#002999]/20 focus:border-[#002999] transition-colors bg-white"
+                    placeholder="+48"
+                    maxLength={5}
+                  />
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    onKeyPress={e => {
+                      if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring focus:ring-[#002999]/20 focus:border-[#002999] transition-colors"
+                    placeholder="123 456 789"
+                    maxLength={15}
+                  />
+                </div>
+                {validationErrors.phone && (
+                  <p className="text-red-500 text-sm mt-1">{validationErrors.phone}</p>
+                )}
+              </div>
+              
+              <div className="mb-4">
+                <label htmlFor="nip" className="block text-gray-700 mb-2">NIP firmy *</label>
                 <input
-                  type="tel"
-                  id="phone"
-                  value={formData.phone}
+                  type="text"
+                  id="nip"
+                  name="nip"
+                  value={formData.nip}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring focus:ring-[#002999]/20 focus:border-[#002999] transition-colors"
-                  placeholder="123 456 789"
+                  onKeyPress={e => {
+                    if (!/[0-9]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  className={`w-full px-4 py-3 border ${validationErrors.nip ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring focus:ring-[#002999]/20 focus:border-[#002999] transition-colors`}
+                  placeholder="1234567890"
+                  maxLength={10}
                 />
+                {validationErrors.nip && (
+                  <p className="text-red-500 text-sm mt-1">{validationErrors.nip}</p>
+                )}
               </div>
               
               <div className="mb-6">
-                <label htmlFor="message" className="block text-gray-700 mb-2">Wiadomość *</label>
+                <label htmlFor="message" className="block text-gray-700 mb-2">Wiadomość</label>
                 <textarea
                   id="message"
+                  name="message"
                   value={formData.message}
                   onChange={handleChange}
                   rows="5"

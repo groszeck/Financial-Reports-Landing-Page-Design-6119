@@ -1,18 +1,9 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
 
-const SUPABASE_URL = 'https://nyfxhyrdhsiogjurhxsa.supabase.co'
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55ZnhoeXJkaHNpb2dqdXJoeHNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI2NzIzNDQsImV4cCI6MjA2ODI0ODM0NH0.zuQ39j-jhCQl7LLJVdAofUzsCjpLuFQst69g31AdnEI'
+const supabaseUrl = 'https://ixhxlczplucyczkiscxs.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4aHhsY3pwbHVjeWN6a2lzY3hzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA5MjcxNDYsImV4cCI6MjA2NjUwMzE0Nn0.vGBLZS1EdFDkhhXTITu1DLCtQq4XYvFD47cGmzbp_lw';
 
-if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-  throw new Error('Missing Supabase environment variables')
-}
-
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true
-  }
-})
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Test connection
 console.log('Testing Supabase connection...')

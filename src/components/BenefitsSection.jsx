@@ -40,7 +40,7 @@ const BenefitsSection = () => {
   ];
 
   return (
-    <section id="benefits" className="py-20 bg-white">
+    <section id="benefits" className="py-20 bg-gradient-to-br from-white via-[rgb(252,248,240)] to-[rgb(250,246,238)]">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

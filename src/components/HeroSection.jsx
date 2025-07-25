@@ -2,12 +2,13 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
+import accountantImg from '../assets/accountant.png';
 
 const { FiAlertTriangle, FiClock, FiShield, FiUsers } = FiIcons;
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-white via-[rgb(242,228,205)] to-[rgb(242,228,205)] overflow-hidden">
+    <section className="relative min-h-screen bg-gradient-to-bl from-[rgb(252,248,240)] via-[rgb(250,246,238)] to-white overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-20 left-20 w-64 h-64 bg-[#002999] rounded-full blur-3xl"></div>
@@ -92,9 +93,9 @@ const HeroSection = () => {
           >
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <img
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                src={accountantImg}
                 alt="Profesjonalna księgowa"
-                className="w-full h-[600px] object-cover"
+                className="w-full h-[600px] object-cover filter brightness-115 contrast-120 saturate-130"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#002999]/20 to-transparent"></div>
             </div>
