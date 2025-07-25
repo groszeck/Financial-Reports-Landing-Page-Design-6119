@@ -224,106 +224,110 @@ const ContactSection = () => {
               </div>
             )}
 
-            <form name="contact" method="POST" data-netlify="true" onSubmit={handleSubmit}>
-              <input type="hidden" name="form-name" value="contact" />
+            <form name="contact" netlify onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label htmlFor="name" className="block text-gray-700 mb-2">Imię i nazwisko *</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border ${validationErrors.name ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring focus:ring-[#002999]/20 focus:border-[#002999] transition-colors`}
-                  placeholder="Jan Kowalski"
-                />
+                <label className="block text-gray-700 mb-2">
+                  Imię i nazwisko *
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 border ${validationErrors.name ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring focus:ring-[#002999]/20 focus:border-[#002999] transition-colors mt-1`}
+                    placeholder="Jan Kowalski"
+                  />
+                </label>
                 {validationErrors.name && (
                   <p className="text-red-500 text-sm mt-1">{validationErrors.name}</p>
                 )}
               </div>
               
               <div className="mb-4">
-                <label htmlFor="email" className="block text-gray-700 mb-2">Email *</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border ${validationErrors.email ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring focus:ring-[#002999]/20 focus:border-[#002999] transition-colors`}
-                  placeholder="jan@example.com"
-                />
+                <label className="block text-gray-700 mb-2">
+                  Email *
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 border ${validationErrors.email ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring focus:ring-[#002999]/20 focus:border-[#002999] transition-colors mt-1`}
+                    placeholder="jan@example.com"
+                  />
+                </label>
                 {validationErrors.email && (
                   <p className="text-red-500 text-sm mt-1">{validationErrors.email}</p>
                 )}
               </div>
               
               <div className="mb-4">
-                <label htmlFor="phone" className="block text-gray-700 mb-2">Telefon *</label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    name="phonePrefix"
-                    value={formData.phonePrefix}
-                    onChange={handleChange}
-                    className="w-24 px-3 py-3 border border-gray-300 rounded-lg focus:ring focus:ring-[#002999]/20 focus:border-[#002999] transition-colors bg-white"
-                    placeholder="+48"
-                    maxLength={5}
-                  />
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    onKeyPress={e => {
-                      if (!/[0-9]/.test(e.key)) {
-                        e.preventDefault();
-                      }
-                    }}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring focus:ring-[#002999]/20 focus:border-[#002999] transition-colors"
-                    placeholder="123 456 789"
-                    maxLength={15}
-                  />
-                </div>
+                <label className="block text-gray-700 mb-2">
+                  Telefon *
+                  <div className="flex gap-2 mt-1">
+                    <input
+                      type="text"
+                      name="phonePrefix"
+                      value={formData.phonePrefix}
+                      onChange={handleChange}
+                      className="w-24 px-3 py-3 border border-gray-300 rounded-lg focus:ring focus:ring-[#002999]/20 focus:border-[#002999] transition-colors bg-white"
+                      placeholder="+48"
+                      maxLength={5}
+                    />
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      onKeyPress={e => {
+                        if (!/[0-9]/.test(e.key)) {
+                          e.preventDefault();
+                        }
+                      }}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring focus:ring-[#002999]/20 focus:border-[#002999] transition-colors"
+                      placeholder="123 456 789"
+                      maxLength={15}
+                    />
+                  </div>
+                </label>
                 {validationErrors.phone && (
                   <p className="text-red-500 text-sm mt-1">{validationErrors.phone}</p>
                 )}
               </div>
               
               <div className="mb-4">
-                <label htmlFor="nip" className="block text-gray-700 mb-2">NIP firmy *</label>
-                <input
-                  type="text"
-                  id="nip"
-                  name="nip"
-                  value={formData.nip}
-                  onChange={handleChange}
-                  onKeyPress={e => {
-                    if (!/[0-9]/.test(e.key)) {
-                      e.preventDefault();
-                    }
-                  }}
-                  className={`w-full px-4 py-3 border ${validationErrors.nip ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring focus:ring-[#002999]/20 focus:border-[#002999] transition-colors`}
-                  placeholder="1234567890"
-                  maxLength={10}
-                />
+                <label className="block text-gray-700 mb-2">
+                  NIP firmy *
+                  <input
+                    type="text"
+                    name="nip"
+                    value={formData.nip}
+                    onChange={handleChange}
+                    onKeyPress={e => {
+                      if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                    className={`w-full px-4 py-3 border ${validationErrors.nip ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring focus:ring-[#002999]/20 focus:border-[#002999] transition-colors mt-1`}
+                    placeholder="1234567890"
+                    maxLength={10}
+                  />
+                </label>
                 {validationErrors.nip && (
                   <p className="text-red-500 text-sm mt-1">{validationErrors.nip}</p>
                 )}
               </div>
               
               <div className="mb-6">
-                <label htmlFor="message" className="block text-gray-700 mb-2">Wiadomość</label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  rows="5"
-                  className={`w-full px-4 py-3 border ${validationErrors.message ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring focus:ring-[#002999]/20 focus:border-[#002999] transition-colors`}
-                  placeholder="Jak możemy pomóc?"
-                ></textarea>
+                <label className="block text-gray-700 mb-2">
+                  Wiadomość
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    rows="5"
+                    className={`w-full px-4 py-3 border ${validationErrors.message ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring focus:ring-[#002999]/20 focus:border-[#002999] transition-colors mt-1`}
+                    placeholder="Jak możemy pomóc?"
+                  ></textarea>
+                </label>
                 {validationErrors.message && (
                   <p className="text-red-500 text-sm mt-1">{validationErrors.message}</p>
                 )}
