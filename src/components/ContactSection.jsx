@@ -46,13 +46,13 @@ const ContactSection = () => {
   ];
 
   const handleChange = (e) => {
-    const { id, value, name } = e.target;
+    const { value, name } = e.target;
     if (name === 'phonePrefix') {
       setFormData(prev => ({ ...prev, phonePrefix: value }));
       return;
     }
     // Automatyczne czyszczenie NIP z myślników i spacji
-    if (id === 'nip') {
+    if (name === 'nip') {
       const cleaned = value.replace(/[-\s]/g, '');
       setFormData(prev => ({ ...prev, nip: cleaned }));
       if (validationErrors.nip) {
@@ -60,11 +60,11 @@ const ContactSection = () => {
       }
       return;
     }
-    setFormData(prev => ({ ...prev, [id]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
 
     // Clear validation error when user types
-    if (validationErrors[id]) {
-      setValidationErrors(prev => ({ ...prev, [id]: '' }));
+    if (validationErrors[name]) {
+      setValidationErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
