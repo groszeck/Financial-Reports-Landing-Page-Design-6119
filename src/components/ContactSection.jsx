@@ -122,9 +122,11 @@ const ContactSection = () => {
       formDataToSend.append('form-name', 'contact');
       formDataToSend.append('name', formData.name);
       formDataToSend.append('email', formData.email);
-      formDataToSend.append('phone', `${formData.phonePrefix} ${formData.phone}`.trim());
+      formDataToSend.append('phonePrefix', formData.phonePrefix);
+      formDataToSend.append('phone', formData.phone);
       formDataToSend.append('nip', formData.nip.replace(/[-\s]/g, ''));
       formDataToSend.append('message', formData.message);
+      formDataToSend.append('source', 'SF - zaległe');
 
       // Wyślij do Netlify Forms
       const response = await fetch('/', {
